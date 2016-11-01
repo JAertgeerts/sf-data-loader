@@ -1,6 +1,6 @@
 {
   "name": "sf-data-loader",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Salesforce streaming data loader for Node.js",
   "main": "index.js",
   "bin": {
