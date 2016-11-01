@@ -8,27 +8,53 @@ const sqlparser = require('sql-parser');
 const csvStringify = require('csv-stringify');
 const BulkQueryReadable = require('../lib/bulk-query-readable');
 const bulkOptions = require(path.join(process.cwd(), 'config')).bulkApi;
+const pkgJson = require('../package');
+const cmd = require('commander');
+const fs = require('fs');
+let output = null;
 
-if (!process.argv[2]) {
-  console.log('');
-  console.log('Exports SOQL in CSV format to STDOUT');
-  console.log('');
-  console.log('    Usage: export.js SOQL');
-  console.log('');
-  process.exit(6);
+cmd
+  .usage('[options] [outputFile]')
+  .description(`Export data from Salesforce in CSV format using a SOQL query.
+
+    We use the Bulk API.
+
+    Bulk API query doesn’t support the following SOQL:
+
+    COUNT
+    ROLLUP
+    SUM
+    GROUP BY CUBE
+    OFFSET
+    Nested SOQL queries
+    Relationship fields
+
+    https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/asynch_api_intro.htm`)
+  .version(pkgJson.version)
+  .option('-s, --soql <soqlQuery>', 'Soql query.')
+  .action(function(outputFile) {
+    output = fs.createWriteStream(outputFile);
+  });
+
+cmd.parse(process.argv);
+
+if (process.argv.length === 2) {
+  cmd.help();
 }
 
-const soql = process.argv[2];
+if (!output) {
+  output = process.stdout;
+}
 
-bulkOptions.object = getObjectFromSoql(soql);
+bulkOptions.object = getObjectFromSoql(cmd.soql);
 bulkOptions.operation = 'query';
 
 multipipe(
-  new BulkQueryReadable(soql, bulkOptions).init(),
+  new BulkQueryReadable(cmd.soql, bulkOptions).init(),
   csvStringify({
     header: true
   }),
-  process.stdout,
+  output,
   (err) => {
     if (err) {
       console.error('ERROR', err);

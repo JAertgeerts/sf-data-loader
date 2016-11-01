@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "JSONStream": "1.2.1",
+    "commander": "2.9.0",
     "csv-parse": "1.1.7",
     "csv-stringify": "1.0.4",
     "multipipe": "1.0.1",

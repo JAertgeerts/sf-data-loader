@@ -2,6 +2,9 @@
 
 Salesforce Data Loader for Node.js
 
+WARNING ALPHA SOFTWARE !!! DO NOT COUNT ON http://semver.org/ till we are on
+first base.
+
 Rome wasn't built in a day.
 
 ## TODO

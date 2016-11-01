@@ -12,9 +12,13 @@ let batchOptions = {};
 
 if (!process.argv[2]) {
   console.log('');
-  console.log('Inserts rows into the SF OBJECT from STDIN in CSV format.');
+  console.log('Deletes rows from the SF OBJECT from STDIN in CSV format.');
   console.log('');
-  console.log('    Usage: sfinsert OBJECT [ BULK_OPTIONS ] [ BATCH_OPTIONS ]');
+  console.log('    Usage: sfdelete OBJECT [ BULK_OPTIONS ] [ BATCH_OPTIONS ]');
+  console.log('');
+  console.log('Example:');
+  console.log('');
+  console.log('    sfexport "select Id from Contact" | sfdelete Contact');
   console.log('');
   process.exit(6);
 }
@@ -28,7 +32,7 @@ if (process.argv[4]) {
 }
 
 bulkOptions.object = process.argv[2];
-bulkOptions.operation = 'insert';
+bulkOptions.operation = 'hardDelete';
 const transform = new AddBatchTransform(bulkOptions, batchOptions);
 
 multipipe(

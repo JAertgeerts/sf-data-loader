@@ -14,7 +14,7 @@ if (!process.argv[2]) {
   console.log('');
   console.log('Updates the SF OBJECT from STDIN in CSV format.');
   console.log('');
-  console.log('    Usage: update.js OBJECT [ BULK_OPTIONS ] [ BATCH_OPTIONS ]');
+  console.log('    Usage: sfupdate OBJECT [ BULK_OPTIONS ] [ BATCH_OPTIONS ]');
   console.log('');
   process.exit(6);
 }

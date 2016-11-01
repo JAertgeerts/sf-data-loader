@@ -14,7 +14,7 @@ if (!process.argv[2]) {
   console.log('');
   console.log('Deletes rows from the SF OBJECT from STDIN in CSV format.');
   console.log('');
-  console.log('    Usage: delete.js OBJECT [ BULK_OPTIONS ] [ BATCH_OPTIONS ]');
+  console.log('    Usage: sfdelete OBJECT [ BULK_OPTIONS ] [ BATCH_OPTIONS ]');
   console.log('');
   console.log('Example:');
   console.log('');
