@@ -1,0 +1,43 @@
+{
+  "name": "sf-data-loader",
+  "version": "0.0.5",
+  "description": "Salesforce streaming data loader for Node.js",
+  "main": "index.js",
+  "bin": {
+    "sfexport": "./bin/sfexport.js",
+    "sfinsert": "./bin/sfinsert.js",
+    "sfupdate": "./bin/sfupdate.js",
+    "sfupsert": "./bin/sfupsert.js",
+    "sfdelete": "./bin/sfdelete.js"
+  },
+  "dependencies": {
+    "JSONStream": "1.2.1",
+    "csv-parse": "1.1.7",
+    "csv-stringify": "1.0.4",
+    "multipipe": "1.0.1",
+    "request": "2.75.0",
+    "sql-parser": "0.5.0",
+    "xml2js": "0.4.17"
+  },
+  "devDependencies": {
+    "mocha": "3.1.0"
+  },
+  "scripts": {
+    "test": "node_modules/mocha/bin/mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dearduckie-io/sf-data-loader.git"
+  },
+  "keywords": [],
+  "author": "Dear Duckie",
+  "bugs": {
+    "url": "https://github.com/dearduckie-io/sf-data-loader/issues"
+  },
+  "homepage": "https://github.com/dearduckie-io/sf-data-loader#readme",
+  "jshintConfig": {
+    "node": true,
+    "esversion": 6,
+    "unused": true
+  }
+}
