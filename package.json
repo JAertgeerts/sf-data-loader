@@ -1,14 +1,14 @@
 {
   "name": "sf-data-loader",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Salesforce streaming data loader for Node.js",
   "main": "index.js",
   "bin": {
-    "sfexport.js": "./bin/sfexport.js",
-    "sfinsert.js": "./bin/sfinsert.js",
-    "sfupdate.js": "./bin/sfupdate.js",
-    "sfupsert.js": "./bin/sfupsert.js",
-    "sfdelete.js": "./bin/sfdelete.js"
+    "sfexport": "./bin/sfexport",
+    "sfinsert": "./bin/sfinsert",
+    "sfupdate": "./bin/sfupdate",
+    "sfupsert": "./bin/sfupsert",
+    "sfdelete": "./bin/sfdelete"
   },
   "dependencies": {
     "JSONStream": "1.2.1",
