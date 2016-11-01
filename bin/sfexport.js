@@ -2,6 +2,7 @@
 
 'use strict';
 
+const multipipe = require('multipipe');
 const path = require('path');
 const sqlparser = require('sql-parser');
 const csvStringify = require('csv-stringify');
@@ -22,15 +23,17 @@ const soql = process.argv[2];
 bulkOptions.object = getObjectFromSoql(soql);
 bulkOptions.operation = 'query';
 
-new BulkQueryReadable(soql, bulkOptions)
-  .init()
-  .pipe(csvStringify({
+multipipe(
+  new BulkQueryReadable(soql, bulkOptions).init(),
+  csvStringify({
     header: true
-  }))
-  .pipe(process.stdout)
-  .on('error', (err) => {
-    console.error('error', err);
-    process.exit(9);
+  }),
+  process.stdout,
+  (err) => {
+    if (err) {
+      console.error('ERROR', err);
+      process.exit(9);
+    }
   });
 
 function getObjectFromSoql(soql) {
