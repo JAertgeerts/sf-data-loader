@@ -7,15 +7,16 @@ const path = require('path');
 const sqlparser = require('sql-parser');
 const csvStringify = require('csv-stringify');
 const BulkQueryReadable = require('../lib/bulk-query-readable');
-const bulkOptions = require(path.join(process.cwd(), 'config')).bulkApi;
 const pkgJson = require('../package');
 const cmd = require('commander');
 const fs = require('fs');
-let output = null;
+let output = process.stdout;
 
 cmd
   .usage('[options] [outputFile]')
   .description(`Export data from Salesforce in CSV format using a SOQL query.
+
+    outputFile is optional. If omitted we output to STDOUT.
 
     We use the Bulk API.
 
@@ -31,7 +32,8 @@ cmd
 
     https://developer.salesforce.com/docs/atlas.en-us.api_asynch.meta/api_asynch/asynch_api_intro.htm`)
   .version(pkgJson.version)
-  .option('-s, --soql <soqlQuery>', 'Soql query.')
+  .option('-s, --soql <query>', 'Soql query.')
+  .option('-c, --config [path]', 'Config file defaults to ./config.js')
   .action(function(outputFile) {
     output = fs.createWriteStream(outputFile);
   });
@@ -42,8 +44,14 @@ if (process.argv.length === 2) {
   cmd.help();
 }
 
-if (!output) {
-  output = process.stdout;
+let bulkOptions = require(path.join(process.cwd(), 'config')).bulkApi;
+
+if (cmd.config) {
+  if (path.isAbsolute(cmd.config)) {
+    bulkOptions = require(cmd.config).bulkApi;
+  } else {
+    bulkOptions = require(path.join(process.cwd(), cmd.config)).bulkApi;
+  }
 }
 
 bulkOptions.object = getObjectFromSoql(cmd.soql);

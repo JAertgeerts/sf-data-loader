@@ -2,49 +2,29 @@
 
 'use strict';
 
-const multipipe = require('multipipe');
-const csvParse = require('csv-parse');
-const path = require('path');
-const AddBatchTransform = require('../lib/add-batch-transform');
+const pkgJson = require('../package');
+const cmd = require('commander');
 
-let bulkOptions = require(path.join(process.cwd(), 'config')).bulkApi;
-let batchOptions = {};
+cmd
+  .usage('[options] [inputFile]')
+  .description(`Update records in Salesforce from CSV file or STDIN.
 
-if (!process.argv[2]) {
-  console.log('');
-  console.log('Updates the SF OBJECT from STDIN in CSV format.');
-  console.log('');
-  console.log('    Usage: sfupdate OBJECT [ BULK_OPTIONS ] [ BATCH_OPTIONS ]');
-  console.log('');
-  process.exit(6);
-}
-
-if (process.argv[3]) {
-  bulkOptions = Object.assign(bulkOptions, JSON.parse(process.argv[3]));
-}
-
-if (process.argv[4]) {
-  batchOptions = JSON.parse(process.argv[4]);
-}
-
-bulkOptions.object = process.argv[2];
-bulkOptions.operation = 'update';
-const transform = new AddBatchTransform(bulkOptions, batchOptions);
-
-multipipe(
-  process.stdin,
-  csvParse({
-    columns: true
-  }),
-  transform,
-  (err) => {
-    if (err) {
-      console.error('ERROR', err);
-      process.exit(9);
-    }
+    inputFile is optional. If omitted we read from STDIN.`)
+  .version(pkgJson.version)
+  .option('-o, --object <name>', 'SF object name -- Account, Contact, etc.')
+  .option('-m, --concurrencyMode [option]', 'Parallel (default) | Serial')
+  .option('-b, --batchSize [number]', 'Defaults to 200')
+  .option('-c, --config [path]', 'Config file defaults to ./config.js')
+  .option('-p, --showProgress', 'Shows progress on STDOUT')
+  .option('-f, --failOnError', 'We will fail with an exit code on any errors.')
+  .action(function(inputFile) {
+    cmd.inputFile = inputFile;
   });
 
-process.on('SIGINT', function() {
-  transform.bulk.abortJob();
-  console.log("Aborting SF Job.");
-});
+cmd.parse(process.argv);
+
+if (process.argv.length === 2) {
+  cmd.help();
+}
+
+require('./add-batch')('update', cmd);
