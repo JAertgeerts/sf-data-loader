@@ -33,7 +33,7 @@ exports = module.exports = (operation, cmd) => {
   bulkOptions.object = cmd.object;
   bulkOptions.operation = operation;
   if (operation === 'upsert') {
-    bulkOptions.externalIdFieldName = cmd.externalIdFieldName;
+    bulkOptions.externalIdFieldName = cmd.externalId;
   }
   const transform = new AddBatchTransform(bulkOptions, batchOptions);
 
