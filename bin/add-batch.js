@@ -40,7 +40,9 @@ exports = module.exports = (operation, cmd) => {
   const handleError = (err) => {
     if (err) {
       console.error('ERROR', err);
-      process.exit(9);
+      transform.bulk.abortJob(() => {
+        process.exit(9);
+      });
     }
   };
 
