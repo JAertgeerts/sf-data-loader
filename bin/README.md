@@ -1,5 +1,10 @@
 # bin
 
+## TODO !!!
+
+Nice specific errors on required params that aren't supplied.
+I thought commander did that for you?
+
 So this folder is a bit strange.
 
 ## Why .js files don't have a .js extension
