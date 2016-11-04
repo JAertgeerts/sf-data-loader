@@ -1,0 +1,73 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const MsSqlInsert = require('../lib/mssql/insert');
+const pkgJson = require('../package');
+const cmd = require('commander');
+//const multipipe = require('multipipe');
+const csvParse = require('csv-parse');
+const path = require('path');
+const fs = require('fs');
+let options = {};
+let input = process.stdin;
+
+cmd
+  .usage('[options] [inputFile]')
+  .description(`Insert records into MS SQL Server from CSV file or STDIN.
+
+    inputFile is optional. If omitted we read from STDIN.`)
+  .version(pkgJson.version)
+  .option('-t, --table <name>', 'Table name.')
+  .option('-d, --tableDef <file>', 'Path to file containing table definition.')
+  .option('-b, --batchSize [number]', 'Defaults to 1000')
+  .option('-c, --config [path]', 'Config file defaults to ./config.js')
+  .option('-p, --showProgress', 'Shows progress on STDOUT')
+  .option('-f, --failOnError', 'We will fail with an exit code on any errors.')
+  .action(function(inputFile) {
+    input = fs.createReadStream(inputFile);
+  });
+
+cmd.parse(process.argv);
+
+if (process.argv.length === 2) {
+  cmd.help();
+}
+
+if (cmd.config) {
+  if (path.isAbsolute(cmd.config)) {
+    options = require(cmd.config);
+  } else {
+    options = require(path.join(process.cwd(), cmd.config));
+  }
+} else {
+  options = require(path.join(process.cwd(), 'config'));
+}
+
+options.tableName = cmd.table;
+options.tableDefinition = require(path.join(process.cwd(), cmd.tableDef));
+options.batchSize = cmd.batchSize || 1000;
+
+const writable = new MsSqlInsert(options);
+const transform = csvParse({
+  columns: true
+});
+
+// CRAPPPPP!!!! multipipe doesn't seem to catch errors from the _flush
+// callback.
+
+// multipipe(input, transform, writable, (err) => {
+//   if (err) {
+//     console.error('ERROR', err);
+//     process.exit(6);
+//   }
+// });
+
+function errfn(err) {
+  console.error('ERROR', err);
+  process.exit(6);
+}
+
+input.on('error', errfn)
+  .pipe(transform).on('error', errfn)
+  .pipe(writable).on('error', errfn);

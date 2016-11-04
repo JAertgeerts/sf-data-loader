@@ -1,9 +1,11 @@
 {
   "name": "sf-data-loader",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Salesforce streaming data loader for Node.js",
   "main": "index.js",
   "bin": {
+    "mssqlexport": "./bin/mssqlexport",
+    "mssqlinsert": "./bin/mssqlinsert",
     "sfexport": "./bin/sfexport",
     "sfinsert": "./bin/sfinsert",
     "sfupdate": "./bin/sfupdate",
@@ -21,7 +23,9 @@
     "xml2js": "0.4.17"
   },
   "devDependencies": {
-    "mocha": "3.1.0"
+    "event-stream": "3.3.4",
+    "mocha": "3.1.0",
+    "mssql": "3.3.0"
   },
   "scripts": {
     "test": "node_modules/mocha/bin/mocha"

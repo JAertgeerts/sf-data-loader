@@ -1,0 +1,57 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const MsSqlExport = require('../lib/mssql/export');
+const multipipe = require('multipipe');
+const path = require('path');
+const csvStringify = require('csv-stringify');
+const pkgJson = require('../package');
+const cmd = require('commander');
+const fs = require('fs');
+let output = process.stdout;
+
+cmd
+  .usage('[options] [outputFile]')
+  .description(`Export data from MS SQL Server in CSV format using a SQL query.
+
+    outputFile is optional. If omitted we output to STDOUT.`)
+  .version(pkgJson.version)
+  .option('-s, --sql <query>', 'SQL query or file with SQL query.')
+  .option('-c, --config [path]', 'Config file defaults to ./config.js')
+  .action(function(outputFile) {
+    output = fs.createWriteStream(outputFile);
+  });
+
+cmd.parse(process.argv);
+
+if (process.argv.length === 2) {
+  cmd.help();
+}
+
+let options = require(path.join(process.cwd(), 'config'));
+
+if (cmd.config) {
+  if (path.isAbsolute(cmd.config)) {
+    options = require(cmd.config);
+  } else {
+    options = require(path.join(process.cwd(), cmd.config));
+  }
+}
+
+options.sql = cmd.sql;
+
+const readable = new MsSqlExport(options);
+
+multipipe(
+  readable,
+  csvStringify({
+    header: true
+  }),
+  output,
+  (err) => {
+    if (err) {
+      console.error('ERROR', err);
+      process.exit(9);
+    }
+  });

@@ -21,3 +21,5 @@ Rome wasn't built in a day.
     request file cached locally)
 * CSV success and error file writable stream
 * Foo
+
+https://github.com/dominictarr/event-stream is really handy.
