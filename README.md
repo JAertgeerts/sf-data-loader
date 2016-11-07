@@ -2,6 +2,8 @@
 
 Salesforce Data Loader for Node.js
 
+TODO !!! PUT IN CANDORIS REPO
+
 WARNING ALPHA SOFTWARE !!! DO NOT COUNT ON http://semver.org/ till we are on
 first base.
 

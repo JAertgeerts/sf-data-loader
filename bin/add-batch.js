@@ -11,6 +11,8 @@ let bulkOptions = null;
 let batchOptions = {};
 let input = process.stdin;
 
+// XXX TODO find a better name !!!!!!
+
 exports = module.exports = (operation, cmd) => {
   if (cmd.inputFile) {
     input = fs.createReadStream(cmd.inputFile);
